@@ -13,9 +13,17 @@ Use buildpack kits on Heroku
 	$ cd ~/awesomepack
 	$ heroku buildpacks:publish awesomepack
 
+#### List available buildpacks
+
+    $ heroku buildpacks:list
+    === Available Buildpacks
+    awesomepack
+    otherpack
+
 #### Add buildpacks to your kit
 
 	$ heroku buildpacks:add awesomepack
+	$ heroku buildpacks:add otherpack
 
 #### Set up your Heroku app to use buildpack kits
 
@@ -34,5 +42,8 @@ When you push, every buildpack in your kit will be evaluated for a match. All bu
 	
 	-----> Heroku receiving push
 	-----> Fetching custom buildpack... done
-	-----> Buildkit+AwesomePack app detected
+	-----> Buildkit+AwesomePack+OtherPack app detected
 	-----> Compiling for AwesomePack
+	       ...
+	-----> Compiling for OtherPack
+	       ...
