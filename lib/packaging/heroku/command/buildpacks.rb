@@ -78,12 +78,12 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
         %x{ tar czf #{dir}/buildpack.tgz * }
 
         begin
-          server["/buildpacks"].post :name => name
+          server["/buildpacks/#{name}"].post :buildpack => File.open("#{dir}/buildpack.tgz", "rb")
         rescue RestClient::Forbidden
           error "The name '#{name}' is already taken."
         end
 
-        server["/buildpacks/#{name}/publish"].post :buildpack => File.open("#{dir}/buildpack.tgz", "rb")
+
       end
     end
   end
@@ -95,7 +95,7 @@ private
   end
 
   def buildkit_host
-    ENV["BUILDPACK_SERVER_URL"] || "https://buildkit.herokuapp.com"
+    ENV["BUILDPACK_SERVER_URL"] || "https://buildkits.herokuapp.com"
   end
 
   def server
