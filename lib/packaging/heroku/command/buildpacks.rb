@@ -95,7 +95,7 @@ private
   end
 
   def buildkit_host
-    ENV["BUILDPACK_SERVER_URL"] || "https://buildkit.herokuapp.com"
+    ENV["BUILDPACK_SERVER_URL"] || "https://buildkits.herokuapp.com"
   end
 
   def server
