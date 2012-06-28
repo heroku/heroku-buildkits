@@ -1,5 +1,6 @@
 require "heroku/command"
 require "tmpdir"
+require "rest_client"
 
 # manage buildpacks
 #
