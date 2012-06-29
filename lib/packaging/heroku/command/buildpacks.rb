@@ -1,5 +1,6 @@
 require "heroku/command"
 require "tmpdir"
+require "rest_client"
 
 # manage buildpacks
 #
@@ -82,8 +83,23 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
         rescue RestClient::Forbidden
           error "The name '#{name}' is already taken."
         end
+      end
+    end
+  end
 
-
+  # buildpacks:rollback NAME
+  #
+  # roll back a buildpack to previous revision
+  #
+  def rollback
+    name = shift_argument || error("Must specify a buildpack name")
+    action "Rolling back #{name} buildpack" do
+      begin
+        server["/buildpacks/#{name}"].delete
+      rescue RestClient::Forbidden
+        error "The '#{name}' buildpack is owned by someone else."
+      rescue RestClient::ResourceNotFound
+        error "The '#{name}' buildpack does not exist."
       end
     end
   end
