@@ -109,6 +109,26 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
+  # buildpacks:revisions NAME
+  #
+  # list buildpack revisions
+  #
+  def revisions
+    name = shift_argument || error("Must specify a buildpack name")
+    begin
+      response = server["/buildpacks/#{name}/revisions"].get
+      revisions = json_decode(response).reverse.map do |r|
+        [r["id"].to_s, time_ago((Time.now - Time.parse(r["created_at"])).to_i)]
+      end
+      styled_header("Revisions")
+      styled_array(revisions, :sort => false)
+    rescue RestClient::Forbidden
+      error "The '#{name}' buildpack is owned by someone else."
+    rescue RestClient::ResourceNotFound
+      error "The '#{name}' buildpack does not exist."
+    end
+  end
+
 private
 
   def auth
