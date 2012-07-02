@@ -79,7 +79,10 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
         %x{ tar czf #{dir}/buildpack.tgz * }
 
         begin
-          server["/buildpacks/#{name}"].post :buildpack => File.open("#{dir}/buildpack.tgz", "rb")
+          buildpack = File.open("#{dir}/buildpack.tgz", "rb")
+          response = server["/buildpacks/#{name}"].post :buildpack => buildpack
+          revision = json_decode(response)["revision"]
+          puts "Published revision #{revision}"
         rescue RestClient::Forbidden
           error "The name '#{name}' is already taken."
         end
@@ -95,7 +98,9 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     name = shift_argument || error("Must specify a buildpack name")
     action "Rolling back #{name} buildpack" do
       begin
-        server["/buildpacks/#{name}"].delete
+        response = server["/buildpacks/#{name}"].delete
+        revision = json_decode(response)["revision"]
+        puts "Rolled back to revision #{revision}."
       rescue RestClient::Forbidden
         error "The '#{name}' buildpack is owned by someone else."
       rescue RestClient::ResourceNotFound
