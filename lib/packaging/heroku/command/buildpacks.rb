@@ -80,7 +80,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
 
         begin
           buildpack = File.open("#{dir}/buildpack.tgz", "rb")
-          response = server["/buildpacks/#{name}"].post :buildpack => buildpack
+          response = server["/buildpacks/#{name}"].post(:buildpack => buildpack)
           revision = json_decode(response)["revision"]
           puts "Published revision #{revision}"
         rescue RestClient::Forbidden
@@ -90,17 +90,18 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:rollback NAME
+  # buildpacks:rollback NAME [REVISION]
   #
-  # roll back a buildpack to previous revision
+  # roll back a buildpack to specified revision or previous
   #
   def rollback
     name = shift_argument || error("Must specify a buildpack name")
+    target = shift_argument || "previous"
     action "Rolling back #{name} buildpack" do
       begin
-        response = server["/buildpacks/#{name}"].delete
+        response = server["/buildpacks/#{name}/revisions/#{target}"].post({})
         revision = json_decode(response)["revision"]
-        puts "Rolled back to revision #{revision}."
+        puts "Rolled back to #{target} as revision #{revision}"
       rescue RestClient::Forbidden
         error "The '#{name}' buildpack is owned by someone else."
       rescue RestClient::ResourceNotFound
