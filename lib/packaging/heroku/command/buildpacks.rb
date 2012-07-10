@@ -31,8 +31,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # list all available buildpacks
   #
   def list
-    styled_header "Available buildpacks"
-    styled_array json_decode(server["/buildpacks"].get)
+    styled_array json_decode(server["/buildpacks"].get).map{|b| b["name"]}
   end
 
   # buildpacks:add NAME
