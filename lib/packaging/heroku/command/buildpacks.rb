@@ -81,7 +81,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
           buildpack = File.open("#{dir}/buildpack.tgz", "rb")
           response = server["/buildpacks/#{name}"].post(:buildpack => buildpack)
           revision = json_decode(response)["revision"]
-          puts "Published revision #{revision}"
+          status "v#{revision}"
         rescue RestClient::Forbidden
           error "The name '#{name}' is already taken."
         end
@@ -96,11 +96,12 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   def rollback
     name = shift_argument || error("Must specify a buildpack name")
     target = shift_argument || "previous"
+    target = target.sub(/^v/, "")
     action "Rolling back #{name} buildpack" do
       begin
         response = server["/buildpacks/#{name}/revisions/#{target}"].post({})
         revision = json_decode(response)["revision"]
-        puts "Rolled back to #{target} as revision #{revision}"
+        status "Rolled back to v#{target} as v#{revision}"
       rescue RestClient::Forbidden
         error "The '#{name}' buildpack is owned by someone else."
       rescue RestClient::ResourceNotFound
@@ -118,7 +119,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     begin
       response = server["/buildpacks/#{name}/revisions"].get
       revisions = json_decode(response).reverse.map do |r|
-        [r["id"].to_s, time_ago((Time.now - Time.parse(r["created_at"])).to_i)]
+        ["v#{r["id"]}", time_ago((Time.now - Time.parse(r["created_at"])).to_i)]
       end
       styled_header("Revisions")
       styled_array(revisions, :sort => false)
