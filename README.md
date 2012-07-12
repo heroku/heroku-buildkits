@@ -4,7 +4,7 @@ Use buildpack kits on Heroku
 
 ## Installation
 
-    $ heroku plugins:install https://github.com/ddollar/heroku-buildpacks
+    $ heroku plugins:install https://github.com/heroku/heroku-buildpacks
     
 ## Usage
 
