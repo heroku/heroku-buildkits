@@ -25,18 +25,6 @@ Use buildpack kits on Heroku
     Rolling back clojure buildpack... Rolled back to 2 as revision 4
     done
 
-### List available buildpacks
-
-    $ heroku buildpacks:list
-    === Available Buildpacks
-    awesomepack
-    otherpack
-
-### Add buildpacks to your kit
-
-	$ heroku buildpacks:add awesomepack
-	$ heroku buildpacks:add otherpack
-
 ### Set up your Heroku app to use buildpack kits
 
 	$ heroku buildpacks:setup -a myapp
