@@ -21,7 +21,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   def setup
     action "Modifying BUILDPACK_URL for #{app}" do
-      buildpack_url = buildkit_host + "/buildkit/#{auth.password}.git"
+      buildpack_url = buildkit_host + "/buildkit/#{auth.user}.tgz"
       api.put_config_vars app, "BUILDPACK_URL" => buildpack_url
     end
   end
