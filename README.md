@@ -5,7 +5,7 @@ Use buildpack kits on Heroku
 ## Installation
 
     $ heroku plugins:install https://github.com/heroku/heroku-buildpacks
-    
+
 ## Usage
 
 ### Publish a buildpack
@@ -39,7 +39,7 @@ When you push, every buildpack in your kit will be evaluated for a match. All bu
 	Compressing objects: 100% (2/2), done.
 	Writing objects: 100% (3/3), 252 bytes, done.
 	Total 3 (delta 1), reused 0 (delta 0)
-	
+
 	-----> Heroku receiving push
 	-----> Fetching custom buildpack... done
 	-----> Buildkit+AwesomePack+OtherPack app detected
