@@ -131,7 +131,41 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-private
+  # buildpacks:share ORG EMAIL
+  #
+  # Add user with EMAIL as a member of ORG
+  def share
+    org = shift_argument || error("Must specify an organization name")
+    email = shift_argument || error("Must specify a user email address")
+    action "Adding #{email} to #{org}" do
+      begin
+        response = server["/buildpacks/#{org}/share/#{email}"].post({})
+      rescue RestClient::Forbidden
+        error "You do not have access to #{org}."
+      rescue RestClient::Conflict
+        error "#{email} is already a member of #{org}."
+      end
+    end
+  end
+
+  # buildpacks:unshare ORG EMAIL
+  #
+  # Remove user with EMAIL from ORG
+  def unshare
+    org = shift_argument || error("Must specify an organization name")
+    email = shift_argument || error("Must specify a user email address")
+    action "Removing #{email} from #{org}" do
+      begin
+        response = server["/buildpacks/#{org}/share/#{email}"].delete
+      rescue RestClient::Forbidden
+        error "You do not have access to #{org}."
+      rescue RestClient::ResourceNotFound
+        error "#{email} is not a member of #{org}."
+      end
+    end
+  end
+
+  private
 
   def auth
     Heroku::Auth
