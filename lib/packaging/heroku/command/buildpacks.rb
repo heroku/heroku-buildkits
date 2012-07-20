@@ -101,7 +101,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
       begin
         response = server["/buildpacks/#{name}/revisions/#{target}"].post({})
         revision = json_decode(response)["revision"]
-        status "Rolled back to v#{target} as v#{revision}"
+        target = target == "previous" ? target : "v#{target}"
+        status "Rolled back to #{target} as v#{revision}"
       rescue RestClient::Forbidden
         error "The '#{name}' buildpack is owned by someone else."
       rescue RestClient::ResourceNotFound
