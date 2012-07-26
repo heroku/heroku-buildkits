@@ -7,3 +7,4 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 
 touch $BUILD_DIR/built-piet
+echo "web: python -m SimpleHTTPServer \\\$PORT" > $BUILD_DIR/Procfile

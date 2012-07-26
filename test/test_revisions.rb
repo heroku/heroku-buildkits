@@ -25,7 +25,17 @@ class TestRevisions < Heroku::Test
     stdout(/=== Revisions\nv3 +\d+s ago\nv2 +\d+s ago\nv1 +\d+s ago/m)
   end
 
-  test_heroku("build -b #{buildpack_url('piet')}") do
+  # push a build all the way out via anvil
+  app = "buildpack-integration-test-#{rand.to_s[2 .. 6]}"
+
+  test_heroku("build -b #{buildpack_url('piet')} -r -a #{app}") do
+    before { heroku "apps:create #{app}" }
     stdout(/Detecting buildpack... done, Piet.*Success, slug is/m)
+    after do
+      proc = open("http://#{app}.herokuapp.com/Procfile").read
+      # for some reason assert_match isn't available here
+      raise MiniTest::Assertion, "build failed" unless proc =~ /SimpleHTTPServer/
+      heroku "apps:destroy #{app} --confirm #{app}"
+    end
   end
 end
