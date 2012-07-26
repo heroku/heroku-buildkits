@@ -56,6 +56,11 @@ class Heroku::Test < MiniTest::Unit::TestCase
   end
 
   def self.heroku(command, options={})
+    unless File.exists?(File.join(HOME, ".heroku", "plugins"))
+      FileUtils.mkdir_p(File.join(HOME, ".heroku", "plugins"))
+      %x{ ln -s #{BASE_PATH} #{File.join(HOME, ".heroku", "plugins")} }
+    end
+
     options = {
       :env    => {},
       :stdin  => nil
