@@ -68,14 +68,17 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
 
   # buildpacks:publish NAME
   #
-  # publish a buildpack
+  # publish a buildpack. NAME should include organization, eg. heroku/clojure
+  #
+  # -d, --buildpack-dir DIR # find buildpack in DIR instead of current directory
   #
   def publish
     name = shift_argument || error("Must specify a buildpack name")
+    bp_dir = options[:buildpack_dir] || Dir.pwd
 
     action "Publishing #{name} buildpack" do
       Dir.mktmpdir do |dir|
-        %x{ tar czf #{dir}/buildpack.tgz * }
+        %x{ cd #{bp_dir} && tar czf #{dir}/buildpack.tgz * }
 
         begin
           buildpack = File.open("#{dir}/buildpack.tgz", "rb")
