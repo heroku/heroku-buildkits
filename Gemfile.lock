@@ -1,0 +1,20 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ansi (1.4.3)
+    excon (0.14.1)
+    heroku-api (0.2.6)
+      excon (~> 0.14.0)
+    minitest (3.2.0)
+    rake (0.9.2.2)
+    turn (0.9.6)
+      ansi
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  heroku-api
+  minitest
+  rake
+  turn

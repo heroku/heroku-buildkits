@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "Sorry, this isn't a real buildpack."
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+touch $BUILD_DIR/built-elixir
