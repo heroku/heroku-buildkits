@@ -26,7 +26,7 @@ class TestRevisions < Heroku::Test
   end
 
   # push a build all the way out via anvil
-  app = "buildpack-integration-test-#{rand.to_s[2 .. 6]}"
+  app = "buildpack-int-test-#{rand.to_s[2 .. 6]}"
 
   test_heroku("build -b #{buildpack_url('piet')} -r -a #{app}") do
     before { heroku "apps:create #{app}" }
