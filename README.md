@@ -52,7 +52,13 @@ When you push, every buildpack in your kit will be evaluated for a match. All bu
 
 To run the tests, you'll need
 [buildkits](https://github.com/heroku/buildkits) running locally.
-Currently you'll need to launch the server by hand:
+Currently you'll need to launch the server by hand. First some setup:
 
+    $ createdb buildkits-test
     $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.db.migrate
-    $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.web
+
+Then to run:
+
+    $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.web &
+    $ export HEROKU_USER=[...] HEROKU_API_KEY=[...] HEROKU_OTHER_USER=[...] HEROKU_OTHER_API_KEY=[...]
+    $ bundle exec rake

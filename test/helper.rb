@@ -23,7 +23,7 @@ NETRC_PATH  = File.join(HOME,   '.netrc')
 HEROKU_USER     = ENV['HEROKU_USER']
 HEROKU_API_KEY  = ENV['HEROKU_API_KEY']
 
-HEROKU_OTHER         = ENV['HEROKU_OTHER']
+HEROKU_OTHER_USER         = ENV['HEROKU_OTHER_USER']
 HEROKU_OTHER_API_KEY = ENV['HEROKU_OTHER_API_KEY']
 
 ENV["BUILDPACK_SERVER_URL"] ||= "http://localhost:5000"
@@ -187,7 +187,7 @@ class Heroku::Test < MiniTest::Unit::TestCase
     command = self.class.class_eval(%{"#{data[:command]}"})
     stdin = self.class.class_eval(%{"#{data[:stdin]}"})
 
-    Heroku.reset_netrc(HEROKU_OTHER, HEROKU_OTHER_API_KEY) if data[:user] == :other
+    Heroku.reset_netrc(HEROKU_OTHER_USER, HEROKU_OTHER_API_KEY) if data[:user] == :other
 
     actual = {}
     actual[:stdout], actual[:stderr], actual[:status] = self.class.heroku(

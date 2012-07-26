@@ -30,7 +30,7 @@ class TestPublish < Heroku::Test
   end
 
   test_heroku("buildpacks:share github #{HEROKU_USER}", :user => :other) do
-    stdout "Adding wesley+fisticuffs@heroku.com to github... done\n"
+    stdout "Adding #{HEROKU_USER} to github... done\n"
   end
 
   test_heroku(publish("github", "urweb")) do
@@ -42,7 +42,7 @@ class TestPublish < Heroku::Test
   end
 
   test_heroku("buildpacks:unshare github #{HEROKU_USER}", :user => :other) do
-    stdout "Removing wesley+fisticuffs@heroku.com from github... done\n"
+    stdout "Removing #{HEROKU_USER} from github... done\n"
   end
 
   test_heroku(publish("github", "urweb")) do
