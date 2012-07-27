@@ -85,8 +85,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
           response = server["/buildpacks/#{name}"].post(:buildpack => buildpack)
           revision = json_decode(response)["revision"]
           status "v#{revision}"
-        rescue RestClient::Forbidden
-          error "The name '#{name}' is already taken."
+        rescue RestClient::Exception => e
+          error json_decode(e.http_body)["message"]
         end
       end
     end
@@ -106,6 +106,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
         revision = json_decode(response)["revision"]
         target = target == "previous" ? target : "v#{target}"
         status "Rolled back to #{target} as v#{revision}"
+      rescue RestClient::BadRequest => e
+        error json_decode(e.http_body)["message"]
       rescue RestClient::Forbidden
         error "The '#{name}' buildpack is owned by someone else."
       rescue RestClient::ResourceNotFound
@@ -127,6 +129,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
       end
       styled_header("Revisions")
       styled_array(revisions, :sort => false)
+    rescue RestClient::BadRequest => e
+      error json_decode(e.http_body)["message"]
     rescue RestClient::Forbidden
       error "The '#{name}' buildpack is owned by someone else."
     rescue RestClient::ResourceNotFound
@@ -143,6 +147,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     action "Adding #{email} to #{org}" do
       begin
         response = server["/buildpacks/#{org}/share/#{email}"].post({})
+      rescue RestClient::BadRequest => e
+        error json_decode(e.http_body)["message"]
       rescue RestClient::Forbidden
         error "You do not have access to #{org}."
       rescue RestClient::Conflict
@@ -160,6 +166,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     action "Removing #{email} from #{org}" do
       begin
         response = server["/buildpacks/#{org}/share/#{email}"].delete
+      rescue RestClient::BadRequest => e
+        error json_decode(e.http_body)["message"]
       rescue RestClient::Forbidden
         error "You do not have access to #{org}."
       rescue RestClient::ResourceNotFound
