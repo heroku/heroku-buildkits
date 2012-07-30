@@ -7,21 +7,45 @@ class TestPublish < Heroku::Test
 
   reset_db
 
-  test_heroku(publish("github", "elixir")) do
-    status(0)
-    stderr("")
-    stdout("Publishing github/elixir buildpack... done, v1\n")
+  test_heroku(publish("heroku", "elixir")) do
+    stdout "Publishing heroku/elixir buildpack... done, v1\n"
   end
 
-  test_heroku(publish("github", "elixir")) do
-    status(0)
-    stderr("")
-    stdout("Publishing github/elixir buildpack... done, v2\n")
+  test_heroku(publish("heroku", "elixir")) do
+    stdout "Publishing heroku/elixir buildpack... done, v2\n"
   end
 
-  # publish to other org, unauthorized
-  # share as other user
-  # publish to other org, authorized
-  # unshare as uthor user
-  # publish to other org, unauthorized
+  test_heroku(publish("heroku", "elixir"), :user => :other) do
+    stdout "Publishing heroku/elixir buildpack... failed\n"
+    stderr " !    Not a member of that organization.\n"
+    status 1
+  end
+
+  test_heroku(publish("github", "urweb"), :user => :other) do
+    stdout "Publishing github/urweb buildpack... done, v1\n"
+  end
+
+  test_heroku(publish("github", "urweb")) do
+    stdout "Publishing github/urweb buildpack... failed\n"
+    stderr " !    Not a member of that organization.\n"
+    status 1
+  end
+
+  test_heroku("buildpacks:share github #{HEROKU_USER}", :user => :other) do
+    stdout "Adding wesley+fisticuffs@heroku.com to github... done\n"
+  end
+
+  test_heroku(publish("github", "urweb")) do
+    stdout "Publishing github/urweb buildpack... done, v2\n"
+  end
+
+  test_heroku("buildpacks:unshare github #{HEROKU_USER}", :user => :other) do
+    stdout "Removing wesley+fisticuffs@heroku.com from github... done\n"
+  end
+
+  test_heroku(publish("github", "urweb")) do
+    stdout "Publishing github/urweb buildpack... failed\n"
+    stderr " !    Not a member of that organization.\n"
+    status 1
+  end
 end

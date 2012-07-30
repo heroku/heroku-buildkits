@@ -19,27 +19,26 @@ HOME        = Dir.mktmpdir
 PATH        = `echo $PATH`
 NETRC_PATH  = File.join(HOME,   '.netrc')
 
-HEROKU_API_KEY  = ENV['HEROKU_API_KEY']
 HEROKU_USER     = ENV['HEROKU_USER']
-HEROKU_PASSWORD = ENV['HEROKU_PASSWORD']
+HEROKU_API_KEY  = ENV['HEROKU_API_KEY']
 
-HEROKU_COLLABORATOR         = ENV['HEROKU_COLLABORATOR']
-HEROKU_COLLABORATOR_API_KEY = ENV['HEROKU_COLLABORATOR_API_KEY']
+HEROKU_OTHER         = ENV['HEROKU_OTHER']
+HEROKU_OTHER_API_KEY = ENV['HEROKU_OTHER_API_KEY']
 
 ENV["BUILDPACK_SERVER_URL"] ||= "http://localhost:5000"
 
 module Heroku
-  def self.reset_netrc
+  def self.reset_netrc(user=HEROKU_USER, api_key=HEROKU_API_KEY)
     FileUtils.rm_rf(NETRC_PATH)
     # Setup netrc credentials in HOME
     File.open(NETRC_PATH, 'w') do |netrc|
       netrc.puts(<<-NETRC)
     machine api.heroku.com
-      login #{HEROKU_USER}
-      password #{HEROKU_API_KEY}
+      login #{user}
+      password #{api_key}
     machine code.heroku.com
-      login #{HEROKU_USER}
-      password #{HEROKU_API_KEY}
+      login #{user}
+      password #{api_key}
       NETRC
     end
     FileUtils.chmod(0600, NETRC_PATH)
@@ -49,6 +48,10 @@ end
 Heroku.reset_netrc
 
 class Heroku::Test < MiniTest::Unit::TestCase
+  def self.test_order
+    :sorted
+  end
+
   def self.commands
     @commands ||= Hash.new {|hash,key| hash[key] = {}}
   end
@@ -149,7 +152,11 @@ class Heroku::Test < MiniTest::Unit::TestCase
     @current_command = [@current_command, options[:comment]].compact.join(' # ')
     self.commands[@current_command][:command] = command
     self.commands[@current_command][:stdin]   = options[:stdin]
+    self.commands[@current_command][:user]    = options[:user]
     self.commands[@current_command][:env]     = options[:env] || {}
+    # sane default values for status code and stderr, can be overridden
+    self.commands[@current_command][:status]  = lambda { 0 }
+    self.commands[@current_command][:stderr]  = lambda { "" }
     yield
     instance_eval(<<-METHOD)
       define_method('#{@current_command}') do
@@ -178,6 +185,8 @@ class Heroku::Test < MiniTest::Unit::TestCase
     command = self.class.class_eval(%{"#{data[:command]}"})
     stdin = self.class.class_eval(%{"#{data[:stdin]}"})
 
+    Heroku.reset_netrc(HEROKU_OTHER, HEROKU_OTHER_API_KEY) if data[:user] == :other
+
     actual = {}
     actual[:stdout], actual[:stderr], actual[:status] = self.class.heroku(
       command, { :env => data[:env] || {}, :stdin => stdin }
@@ -196,6 +205,8 @@ class Heroku::Test < MiniTest::Unit::TestCase
         assert_equal(expected, actual[key], key)
       end
     end
+  ensure
+    Heroku.reset_netrc
   end
 
   def self.buildpack_dir(name)
