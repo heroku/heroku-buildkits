@@ -9,6 +9,10 @@ class TestPublish < Heroku::Test
     stdout "Publishing heroku/elixir buildpack... done, v2\n"
   end
 
+  test_heroku("build -b #{buildpack_url('elixir')}") do
+    stdout(/Detecting buildpack... done, Elixir.*Success, slug is/m)
+  end
+
   test_heroku(publish("heroku", "elixir"), :user => :other) do
     stdout "Publishing heroku/elixir buildpack... failed\n"
     stderr " !    Not a member of that organization.\n"
@@ -31,6 +35,10 @@ class TestPublish < Heroku::Test
 
   test_heroku(publish("github", "urweb")) do
     stdout "Publishing github/urweb buildpack... done, v2\n"
+  end
+
+  test_heroku("build -b #{buildpack_url('urweb', 'github')}") do
+    stdout(/Detecting buildpack... done, Ur\/Web.*Success, slug is/m)
   end
 
   test_heroku("buildpacks:unshare github #{HEROKU_USER}", :user => :other) do

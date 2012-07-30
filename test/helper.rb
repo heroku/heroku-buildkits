@@ -65,6 +65,7 @@ class Heroku::Test < MiniTest::Unit::TestCase
     unless File.exists?(File.join(HOME, ".heroku", "plugins"))
       FileUtils.mkdir_p(File.join(HOME, ".heroku", "plugins"))
       %x{ ln -s #{BASE_PATH} #{File.join(HOME, ".heroku", "plugins")} }
+      %x{ ln -s #{BASE_PATH}/heroku-anvil #{File.join(HOME, ".heroku", "plugins")} }
     end
 
     options = {
@@ -143,7 +144,7 @@ class Heroku::Test < MiniTest::Unit::TestCase
   end
 
   def self.test_heroku(command, options={}, &block)
-    @num ? @num += 1 : @num = 0 # need ordered tests
+    @num ? @num = @num.succ : @num = "01" # need ordered tests
 
     if options[:stdin]
       @current_command = "test #{@num} #{command} <<< #{options[:stdin].inspect}"
@@ -212,6 +213,11 @@ class Heroku::Test < MiniTest::Unit::TestCase
 
   def self.buildpack_dir(name)
     File.join(BASE_PATH, 'test_buildpacks', name)
+  end
+
+  def self.buildpack_url(name, org="heroku")
+    bucket = ENV['BUILDPACK_BUCKET'] || 'buildkits-dev'
+    url = "http://#{bucket}.s3.amazonaws.com/buildpacks/#{org}/#{name}.tgz"
   end
 
   def self.publish(org, name, dir=buildpack_dir(name))
