@@ -47,3 +47,12 @@ When you push, every buildpack in your kit will be evaluated for a match. All bu
 	       ...
 	-----> Compiling for OtherPack
 	       ...
+
+## Developing
+
+To run the tests, you'll need
+[buildkits](https://github.com/heroku/buildkits) running locally.
+Currently you'll need to launch the server by hand:
+
+    $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.db.migrate
+    $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.web

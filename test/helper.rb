@@ -1,7 +1,9 @@
 require 'fileutils'
 require 'open3'
+require 'open-uri'
 require 'stringio'
 require 'tmpdir'
+require 'pg'
 
 require 'heroku/api'
 
@@ -75,6 +77,8 @@ class Heroku::Test < MiniTest::Unit::TestCase
         'PATH'            => PATH,
         # Send BASE_PATH through so that the SimpleCov injector can find us.
         'BASE_PATH'       => BASE_PATH,
+        # Use local buildkits server.
+        "BUILDPACK_SERVER_URL" => ENV["BUILDPACK_SERVER_URL"],
       }.merge(options[:env]),
       "#{RUBY_PATH} #{RUBY_OPTS} #{BIN_HEROKU_PATH} #{command}",
       {
@@ -135,10 +139,12 @@ class Heroku::Test < MiniTest::Unit::TestCase
   end
 
   def self.test_heroku(command, options={}, &block)
+    @num ? @num += 1 : @num = 0 # need ordered tests
+
     if options[:stdin]
-      @current_command = "test #{command} <<< #{options[:stdin].inspect}"
+      @current_command = "test #{@num} #{command} <<< #{options[:stdin].inspect}"
     else
-      @current_command = "test #{command}"
+      @current_command = "test #{@num} #{command}"
     end
     @current_command = [@current_command, options[:comment]].compact.join(' # ')
     self.commands[@current_command][:command] = command
@@ -194,5 +200,14 @@ class Heroku::Test < MiniTest::Unit::TestCase
 
   def self.buildpack_dir(name)
     File.join(BASE_PATH, 'test_buildpacks', name)
+  end
+
+  def self.reset_db
+    uri = URI.parse(ENV["DATABASE_URL"] || "postgres://localhost/buildkits-test")
+    params = {:host => uri.host, :port => uri.port, :dbname => uri.path[1 .. -1]}
+    @db ||= PG.connect(params)
+    ["buildpacks", "kits", "memberships", "organizations", "revisions"].each do |t|
+      @db.exec "DELETE from #{t}"
+    end
   end
 end

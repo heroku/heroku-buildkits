@@ -5,4 +5,5 @@ group :test do
   gem 'minitest'
   gem 'rake'
   gem 'turn'
+  gem "pg", "=0.13.2"
 end
