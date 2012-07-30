@@ -1,3 +1,4 @@
+require 'minitest/autorun'
 require 'fileutils'
 require 'open3'
 require 'open-uri'
@@ -213,6 +214,10 @@ class Heroku::Test < MiniTest::Unit::TestCase
     File.join(BASE_PATH, 'test_buildpacks', name)
   end
 
+  def self.publish(org, name, dir=buildpack_dir(name))
+    "buildpacks:publish #{org}/#{name} -d #{dir}"
+  end
+
   def self.reset_db
     uri = URI.parse(ENV["DATABASE_URL"] || "postgres://localhost/buildkits-test")
     params = {:host => uri.host, :port => uri.port, :dbname => uri.path[1 .. -1]}
@@ -222,3 +227,5 @@ class Heroku::Test < MiniTest::Unit::TestCase
     end
   end
 end
+
+Heroku::Test.reset_db

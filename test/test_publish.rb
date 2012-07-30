@@ -1,12 +1,6 @@
 require(File.expand_path(File.join(File.dirname(__FILE__), 'helper')))
 
 class TestPublish < Heroku::Test
-  def self.publish(org, name)
-    "buildpacks:publish #{org}/#{name} -d #{buildpack_dir(name)}"
-  end
-
-  reset_db
-
   test_heroku(publish("heroku", "elixir")) do
     stdout "Publishing heroku/elixir buildpack... done, v1\n"
   end
