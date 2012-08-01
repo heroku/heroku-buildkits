@@ -70,9 +70,9 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #   end
   # end
 
-  # buildpacks:publish NAME
+  # buildpacks:publish ORG/NAME
   #
-  # publish a buildpack. NAME should include organization, eg. heroku/clojure
+  # publish a buildpack.
   #
   # -d, --buildpack-dir DIR # find buildpack in DIR instead of current directory
   #
@@ -96,9 +96,11 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:rollback NAME [REVISION]
+  # buildpacks:rollback ORG/NAME [REVISION]
   #
-  # roll back a buildpack to specified revision or previous
+  # roll back a buildpack
+  #
+  # If no revision is specified, use previous.
   #
   def rollback
     name = shift_argument || error("Must specify a buildpack name")
@@ -120,7 +122,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:revisions NAME
+  # buildpacks:revisions ORG/NAME
   #
   # list buildpack revisions
   #
@@ -145,6 +147,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # buildpacks:share ORG EMAIL
   #
   # Add user with EMAIL as a member of ORG
+  #
   def share
     org = shift_argument || error("Must specify an organization name")
     email = shift_argument || error("Must specify a user email address")
@@ -164,6 +167,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # buildpacks:unshare ORG EMAIL
   #
   # Remove user with EMAIL from ORG
+  #
   def unshare
     org = shift_argument || error("Must specify an organization name")
     email = shift_argument || error("Must specify a user email address")
@@ -191,8 +195,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   end
 
   def server
-    RestClient::Resource.new buildkit_host, :user => auth.user, :password => auth.password
+    RestClient::Resource.new(buildkit_host, :user => auth.user,
+                             :password => auth.password)
   end
-
 end
 
