@@ -31,7 +31,11 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # list all available buildpacks
   #
   def list
-    styled_array json_decode(server["/buildpacks"].get).map{|b| b["name"]}
+    styled_header "Available Buildpacks"
+    packs = json_decode(server["/buildpacks"].get)
+    styled_array packs.map{|b| "#{b['org']}/#{b['name']}" }
+  end
+  alias_method :index, :list
   end
 
   # # buildpacks:add NAME
