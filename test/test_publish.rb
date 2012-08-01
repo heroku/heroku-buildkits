@@ -2,6 +2,7 @@ require(File.expand_path(File.join(File.dirname(__FILE__), 'helper')))
 
 class TestPublish < Heroku::Test
   test_heroku(publish("heroku", "elixir")) do
+    before { reset_db }
     stdout "Publishing heroku/elixir buildpack... done, v1\n"
   end
 
@@ -49,5 +50,9 @@ class TestPublish < Heroku::Test
     stdout "Publishing github/urweb buildpack... failed\n"
     stderr " !    Not a member of that organization.\n"
     status 1
+  end
+
+  test_heroku("buildpacks:list") do
+    stdout "=== Available Buildpacks\ngithub/urweb\nheroku/elixir\n\n"
   end
 end

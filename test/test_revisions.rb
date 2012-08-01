@@ -2,6 +2,7 @@ require(File.expand_path(File.join(File.dirname(__FILE__), 'helper')))
 
 class TestRevisions < Heroku::Test
   test_heroku(publish("heroku", "piet")) do
+    before { reset_db }
     stdout "Publishing heroku/piet buildpack... done, v1\n"
   end
 
