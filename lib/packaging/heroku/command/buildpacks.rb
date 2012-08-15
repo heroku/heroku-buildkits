@@ -90,7 +90,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
           revision = json_decode(response)["revision"]
           status "v#{revision}"
         rescue RestClient::Exception => e
-          error json_decode(e.http_body)["message"]
+          body = json_decode(e.http_body) || {"message" => "failed"}
+          error body["message"]
         end
       end
     end
@@ -131,7 +132,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     begin
       response = server["/buildpacks/#{name}/revisions"].get
       revisions = json_decode(response).reverse.map do |r|
-        ["v#{r["id"]}", time_ago((Time.now - Time.parse(r["created_at"])).to_i)]
+        ["v#{r["id"]}", time_ago((Time.now - Time.parse(r["created_at"])).to_i),
+         "by #{r["published_by"]}"]
       end
       styled_header("Revisions")
       styled_array(revisions, :sort => false)
