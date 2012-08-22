@@ -6,27 +6,6 @@ require "rest_client"
 #
 class Heroku::Command::Buildpacks < Heroku::Command::Base
 
-  # buildpacks:kit
-  #
-  # list the buildpacks in your kit
-  #
-  def kit
-    styled_header "Buildpacks in #{auth.user}'s kit"
-    packs = json_decode(server["/buildkit"].get)
-    styled_array packs.map{|b| "#{b['org']}/#{b['name']}" }
-  end
-
-  # buildpacks:setup
-  #
-  # set up the BUILDPACK_URL for an app
-  #
-  def setup
-    action "Modifying BUILDPACK_URL for #{app}" do
-      buildpack_url = buildkit_host + "/buildkit/#{auth.user}.tgz"
-      api.put_config_vars app, "BUILDPACK_URL" => buildpack_url
-    end
-  end
-
   # buildpacks:list
   #
   # list all available buildpacks
@@ -37,38 +16,6 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     styled_array packs.map{|b| "#{b['org']}/#{b['name']}" }
   end
   alias_method :index, :list
-
-  # buildpacks:add ORG/NAME
-  #
-  # add a buildpack to your kit
-  #
-  def add
-    name = shift_argument || error("Must specify a buildpack name")
-    action("Adding #{name} to your kit") do
-      begin
-        server["/buildkit/#{name}"].put({})
-      rescue RestClient::ResourceNotFound
-        error "No such buildpack: #{name}"
-      rescue RestClient::Forbidden
-        error "The #{name} buildpack is already in your kit"
-      end
-    end
-  end
-
-  # buildpacks:remove ORG/NAME
-  #
-  # remove a buildpack from your kit
-  #
-  def remove
-    name = shift_argument || error("Must specify a buildpack name")
-    action("Removing #{name} from your kit") do
-      begin
-        server["/buildkit/#{name}"].delete({})
-      rescue RestClient::ResourceNotFound
-        error "The #{name} buildpack is not in your kit"
-      end
-    end
-  end
 
   # buildpacks:publish ORG/NAME
   #
