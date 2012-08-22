@@ -1,37 +1,41 @@
 # heroku-buildpacks
 
-Use buildpack kits on Heroku
+Publish and consume buildpacks on Heroku.
 
 ## Installation
 
     $ heroku plugins:install https://github.com/heroku/heroku-buildpacks
 
-## Usage
+## Buildpack Maintainers
 
 ### Publish a buildpack
 
 	$ cd ~/awesomepack
-	$ heroku buildpacks:publish awesomepack
+	$ heroku buildpacks:publish mycorp/awesomepack
 
-### Roll back
+### Revisions
 
-    $ heroku buildpacks:revisions awesomepack
+    $ heroku buildpacks:revisions mycorp/awesomepack
     === Revisions
     3   2012/06/29 13:45:33
     2   2012/06/29 13:44:16
     1   2012/06/28 17:23:06
 
-    $ heroku buildpacks:rollback awesomepack 2
-    Rolling back clojure buildpack... Rolled back to 2 as revision 4
+    $ heroku buildpacks:rollback mycorp/awesomepack 2
+    Rolling back mycorp/awesomepack buildpack... Rolled back to 2 as revision 4
     done
+
+## Buildpack Users
 
 ### Set up your Heroku app to use buildpack kits
 
-	$ heroku buildpacks:setup -a myapp
+	$ heroku buildkits:setup -a myapp
 
 ### Push your app
 
-When you push, every buildpack in your kit will be evaluated for a match. All buildpacks that match (using `bin/detect`) will be used in sequence to compile your application.
+When you push, every buildpack in your kit will be evaluated for a
+match. All buildpacks that match (using `bin/detect`) will be used in
+sequence to compile your application.
 
 	$ git push heroku master
 	Counting objects: 5, done.
