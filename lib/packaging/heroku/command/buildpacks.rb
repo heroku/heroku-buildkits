@@ -24,7 +24,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # -d, --buildpack-dir DIR # find buildpack in DIR instead of current directory
   #
   def publish
-    name = shift_argument || error("Must specify a buildpack name")
+    name = check_name(shift_argument)
     bp_dir = options[:buildpack_dir] || Dir.pwd
 
     action "Publishing #{name} buildpack" do
@@ -51,7 +51,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # If no revision is specified, use previous.
   #
   def rollback
-    name = shift_argument || error("Must specify a buildpack name")
+    name = check_name(shift_argument)
     target = shift_argument || "previous"
     target = target.sub(/^v/, "")
     action "Rolling back #{name} buildpack" do
@@ -75,7 +75,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # list buildpack revisions
   #
   def revisions
-    name = shift_argument || error("Must specify a buildpack name")
+    name = check_name(shift_argument)
     begin
       response = server["/buildpacks/#{name}/revisions"].get
       revisions = json_decode(response).reverse.map do |r|
@@ -146,6 +146,16 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   def server
     RestClient::Resource.new(buildkit_host, :user => auth.user,
                              :password => auth.password)
+  end
+
+  def check_name(name)
+    if name.nil?
+      error("Must specify a buildpack name")
+    elsif not name =~ /\//
+      error("Must include organization name, eg myorg/mypack")
+    else
+      name
+    end
   end
 end
 
