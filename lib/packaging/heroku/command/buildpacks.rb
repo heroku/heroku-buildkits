@@ -10,6 +10,17 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   # list all available buildpacks
   #
+  #Example:
+  #
+  # $ heroku buildpacks:list
+  #
+  # === Available Buildpacks
+  # heroku/clojure
+  # heroku/emacs
+  # heroku/erlang
+  # myorg/mypack
+  # [...]
+  #
   def list
     styled_header "Available Buildpacks"
     packs = json_decode(server["/buildpacks"].get)
@@ -22,6 +33,14 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # publish a buildpack.
   #
   # -d, --buildpack-dir DIR # find buildpack in DIR instead of current directory
+  #
+  # If the organization doesn't yet exist, it will be created and you
+  # will be added to it.
+  #
+  #Example:
+  #
+  # $ heroku buildpacks:publish myorg/mypack
+  # Publishing myorg/mypack buildpack... done, v4
   #
   def publish
     name = check_name(shift_argument)
@@ -46,9 +65,15 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
 
   # buildpacks:rollback ORG/NAME [REVISION]
   #
-  # roll back a buildpack
+  # roll back a buildpack to an earlier revision
   #
-  # If no revision is specified, use previous.
+  # If no revision is specified, use previous. Use
+  # buildpacks:revisions to see a full list.
+  #
+  #Example:
+  #
+  # $ heroku buildpacks:rollback myorg/mypack v2
+  # Rolling back myorg/mypack buildpack... done, Rolled back to v2 as v5
   #
   def rollback
     name = check_name(shift_argument)
@@ -74,6 +99,15 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   # list buildpack revisions
   #
+  #Example:
+  #
+  # $ h buildpacks:revisions heroku/emacs
+  # === Revisions
+  # v4  2s ago   by me@myorg.org
+  # v3  1m ago   by me@myorg.org
+  # v2  2m ago   by me@myorg.org
+  # v1  11m ago  by me@myorg.org
+  #
   def revisions
     name = check_name(shift_argument)
     begin
@@ -97,6 +131,14 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   # Add user with EMAIL as a member of ORG
   #
+  # Any member of an organization can publish to any buildpack owned
+  # by that organization.
+  #
+  #Example:
+  #
+  # $ heroku buildpacks:share myorg coworker@myorg.org
+  # Adding coworker@myorg.org to myorg... done
+  #
   def share
     org = shift_argument || error("Must specify an organization name")
     email = shift_argument || error("Must specify a user email address")
@@ -116,6 +158,10 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # buildpacks:unshare ORG EMAIL
   #
   # Remove user with EMAIL from ORG
+  #
+  #Example:
+  # $ heroku buildpacks:unshare myorg coworker@myorg.org
+  # Removing coworker@myorg.org from myorg... done
   #
   def unshare
     org = shift_argument || error("Must specify an organization name")
