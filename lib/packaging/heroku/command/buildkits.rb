@@ -45,14 +45,16 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   # add a buildpack to your kit
   #
   def add
-    name = shift_argument || error("Must specify a buildpack name")
-    action("Adding #{name} to your kit") do
-      begin
-        server["/buildkit/#{name}"].put({})
-      rescue RestClient::ResourceNotFound
-        error "No such buildpack: #{name}"
-      rescue RestClient::Forbidden
-        error "The #{name} buildpack is already in your kit"
+    error("Must specify a buildpack name") if invalid_arguments.empty?
+    while name = shift_argument
+      action("Adding #{name} to your kit") do
+        begin
+          server["/buildkit/#{name}"].put({})
+        rescue RestClient::ResourceNotFound
+          error "No such buildpack: #{name}"
+        rescue RestClient::Forbidden
+          error "The #{name} buildpack is already in your kit"
+        end
       end
     end
   end
@@ -62,13 +64,31 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   # remove a buildpack from your kit
   #
   def remove
-    name = shift_argument || error("Must specify a buildpack name")
-    action("Removing #{name} from your kit") do
-      begin
-        server["/buildkit/#{name}"].delete({})
-      rescue RestClient::ResourceNotFound
-        error "The #{name} buildpack is not in your kit"
+    error("Must specify a buildpack name") if invalid_arguments.empty
+    while name = shift_argument
+      action("Removing #{name} from your kit") do
+        begin
+          server["/buildkit/#{name}"].delete({})
+        rescue RestClient::ResourceNotFound
+          error "The #{name} buildpack is not in your kit"
+        end
       end
     end
+  end
+
+  # TODO: remove duplication between buildpacks command?
+  private
+
+  def auth
+    Heroku::Auth
+  end
+
+  def buildkit_host
+    ENV["BUILDPACK_SERVER_URL"] || "https://buildkits.herokuapp.com"
+  end
+
+  def server
+    RestClient::Resource.new(buildkit_host, :user => auth.user,
+                             :password => auth.password)
   end
 end
