@@ -24,9 +24,13 @@ HEROKU_USER     = ENV['HEROKU_USER']
 HEROKU_API_KEY  = ENV['HEROKU_API_KEY']
 
 HEROKU_OTHER_USER         = ENV['HEROKU_OTHER_USER']
-HEROKU_OTHER_API_KEY = ENV['HEROKU_OTHER_API_KEY']
+HEROKU_OTHER_API_KEY      = ENV['HEROKU_OTHER_API_KEY']
 
 ENV["BUILDPACK_SERVER_URL"] ||= "http://localhost:5000"
+
+if !(HEROKU_USER && HEROKU_API_KEY && HEROKU_OTHER_USER && HEROKU_OTHER_API_KEY)
+  abort "Must set HEROKU_USER etc; see \"Developing\" at the end of README.md."
+end
 
 module Heroku
   def self.reset_netrc(user=HEROKU_USER, api_key=HEROKU_API_KEY)
