@@ -64,7 +64,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   # remove a buildpack from your kit
   #
   def remove
-    error("Must specify a buildpack name") if invalid_arguments.empty
+    error("Must specify a buildpack name") if invalid_arguments.empty?
     while name = shift_argument
       action("Removing #{name} from your kit") do
         begin
