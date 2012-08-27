@@ -231,6 +231,7 @@ class Heroku::Test < MiniTest::Unit::TestCase
   def self.reset_db
     uri = URI.parse(ENV["DATABASE_URL"] || "postgres://localhost/buildkits-test")
     params = {:host => uri.host, :port => uri.port, :dbname => uri.path[1 .. -1]}
+    params.merge!({:user => uri.user, :password => uri.password}) if (uri.user && uri.password)
     @db ||= PG.connect(params)
     ["buildpacks", "kits", "memberships", "organizations", "revisions"].each do |t|
       @db.exec "DELETE from #{t}"
