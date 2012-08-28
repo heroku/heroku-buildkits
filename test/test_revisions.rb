@@ -15,7 +15,7 @@ class TestRevisions < Heroku::Test
   end
 
   test_heroku("buildpacks:revisions heroku/piet") do
-    stdout(/=== Revisions\nv2 +\d+s ago +by #{Regexp.escape(HEROKU_USER)}\nv1 +\d+s ago +by /m)
+    stdout(/=== Revisions\nv2 +\d+[sm] ago +by #{Regexp.escape(HEROKU_USER)}\nv1 +\d+[sm] ago +by /m)
   end
 
   test_heroku("buildpacks:rollback heroku/piet") do
@@ -23,7 +23,7 @@ class TestRevisions < Heroku::Test
   end
 
   test_heroku("buildpacks:revisions heroku/piet") do
-    stdout(/=== Revisions\nv3 +\d+s ago +by #{Regexp.escape(HEROKU_USER)}\nv2 +\d+s ago +by /m)
+    stdout(/=== Revisions\nv3 +\d+[sm] ago +by #{Regexp.escape(HEROKU_USER)}\nv2 +\d+[sm] ago +by /m)
   end
 
   # push a build all the way out via anvil
