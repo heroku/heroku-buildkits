@@ -160,6 +160,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # Remove user with EMAIL from ORG
   #
   #Example:
+  #
   # $ heroku buildpacks:unshare myorg coworker@myorg.org
   # Removing coworker@myorg.org from myorg... done
   #
@@ -176,6 +177,34 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
       rescue RestClient::ResourceNotFound
         error "#{email} is not a member of #{org}."
       end
+    end
+  end
+
+  # buildpacks:set BUILDPACK
+  #
+  # Use the specififed buildpack for the current app. You can pass in either
+  # the organization/name or a URL to a tarball or git repo.
+  #
+  #Example:
+  #
+  # $ heroku buildpacks:set kr/inline -a myapp
+  # $ Using kr/inline for myapp... done
+  #
+  def set
+    action "Modifying BUILDPACK_URL for #{app}" do
+      buildpack = shift_argument || error("Must specify a buildpack name")
+      buildpack_url = if buildpack =~ /:\/\//
+                        buildpack
+                      else
+                        begin
+                          response = server["/buildpacks/#{buildpack}"].get
+                          json_decode(response)["tar_link"]
+                        rescue RestClient::Exception => e
+                          body = json_decode(e.http_body) || {"message" => "failed"}
+                          error body["message"]
+                        end
+                      end
+      api.put_config_vars app, "BUILDPACK_URL" => buildpack_url
     end
   end
 
