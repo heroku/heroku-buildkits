@@ -192,19 +192,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   def set
     action "Modifying BUILDPACK_URL for #{app}" do
-      buildpack = shift_argument || error("Must specify a buildpack name")
-      buildpack_url = if buildpack =~ /:\/\//
-                        buildpack
-                      else
-                        begin
-                          response = server["/buildpacks/#{buildpack}"].get
-                          json_decode(response)["tar_link"]
-                        rescue RestClient::Exception => e
-                          body = json_decode(e.http_body) || {"message" => "failed"}
-                          error body["message"]
-                        end
-                      end
-      api.put_config_vars app, "BUILDPACK_URL" => buildpack_url
+      buildpack_url = buildpack_url_for(shift_argument)
+      api.put_config_vars(app, "BUILDPACK_URL" => buildpack_url)
     end
   end
 
@@ -221,6 +210,21 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   def server
     RestClient::Resource.new(buildkit_host, :user => auth.user,
                              :password => auth.password)
+  end
+
+  def buildpack_url_for(name)
+    error("Must specify a buildpack") if name.nil?
+    if name =~ /:\/\//
+      name # is a URL
+    else
+      begin
+        response = server["/buildpacks/#{name}"].get
+        json_decode(response)["tar_link"]
+      rescue RestClient::Exception => e
+        body = json_decode(e.http_body) || {"message" => "failed"}
+        error body["message"]
+      end
+    end
   end
 
   def check_name(name)
