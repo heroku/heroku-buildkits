@@ -113,7 +113,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     begin
       response = server["/buildpacks/#{name}/revisions"].get
       revisions = json_decode(response).reverse.map do |r|
-        ["v#{r["id"]}", time_ago((Time.now - Time.parse(r["created_at"])).to_i),
+        ["v#{r["id"]}", time_ago(r["created_at"]),
          "by #{r["published_by"]}"]
       end
       styled_header("Revisions")
