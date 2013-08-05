@@ -46,6 +46,11 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     name = check_name(shift_argument)
     bp_dir = options[:buildpack_dir] || Dir.pwd
 
+    if ! (File.executable?(File.join(bp_dir, "bin", "detect")) &&
+          File.executable?(File.join(bp_dir, "bin", "compile")))
+      abort "Buildpack #{bp_dir} missing bin/detect or bin/compile."
+    end
+
     action "Publishing #{name} buildpack" do
       Dir.mktmpdir do |dir|
         %x{ cd #{bp_dir} && tar czf #{dir}/buildpack.tgz * }
