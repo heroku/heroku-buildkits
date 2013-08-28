@@ -53,7 +53,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
 
     action "Publishing #{name} buildpack" do
       Dir.mktmpdir do |dir|
-        %x{ cd #{bp_dir} && tar czf #{dir}/buildpack.tgz * }
+        %x{ cd #{bp_dir} && tar czf #{dir}/buildpack.tgz --exclude=.git . }
 
         begin
           buildpack = File.open("#{dir}/buildpack.tgz", "rb")
