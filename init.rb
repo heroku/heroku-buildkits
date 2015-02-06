@@ -1,3 +1,3 @@
 require "heroku/command"
-require "packaging/heroku/command/buildkit"
+require "packaging/heroku/command/buildkits"
 require "tmpdir"
