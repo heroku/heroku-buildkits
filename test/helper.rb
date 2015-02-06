@@ -225,7 +225,7 @@ class Heroku::Test < MiniTest::Unit::TestCase
   end
 
   def self.publish(org, name, dir=buildpack_dir(name))
-    "buildpacks:publish #{org}/#{name} -d #{dir}"
+    "buildkits:publish #{org}/#{name} -d #{dir}"
   end
 
   def self.reset_db

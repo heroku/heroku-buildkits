@@ -2,19 +2,19 @@ require "heroku/command"
 require "tmpdir"
 require "rest_client"
 
-# manage buildpacks
+# manage buildkits
 #
-class Heroku::Command::Buildpacks < Heroku::Command::Base
+class Heroku::Command::Buildkits < Heroku::Command::Base
 
-  # buildpacks:list
+  # buildkits:list
   #
-  # list all available buildpacks
+  # list all available buildkits
   #
   #Example:
   #
-  # $ heroku buildpacks:list
+  # $ heroku buildkits:list
   #
-  # === Available Buildpacks
+  # === Available Buildkits
   # heroku/clojure
   # heroku/emacs
   # heroku/erlang
@@ -22,15 +22,15 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # [...]
   #
   def list
-    styled_header "Available Buildpacks"
-    packs = json_decode(server["/buildpacks"].get)
+    styled_header "Available Buildkits"
+    packs = json_decode(server["/buildkits"].get)
     styled_array packs.map{|b| "#{b['org']}/#{b['name']}" }
   end
   alias_method :index, :list
 
-  # buildpacks:publish ORG/NAME
+  # buildkits:publish ORG/NAME
   #
-  # publish a buildpack.
+  # publish a buildkits.
   #
   # -d, --buildpack-dir DIR # find buildpack in DIR instead of current directory
   #
@@ -39,8 +39,8 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   #Example:
   #
-  # $ heroku buildpacks:publish myorg/mypack
-  # Publishing myorg/mypack buildpack... done, v4
+  # $ heroku buildkits:publish myorg/mypack
+  # Publishing myorg/mypack buildkit... done, v4
   #
   def publish
     name = check_name(shift_argument)
@@ -51,7 +51,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
       abort "Buildpack #{bp_dir} missing bin/detect or bin/compile."
     end
 
-    action "Publishing #{name} buildpack" do
+    action "Publishing #{name} buildkit" do
       Dir.mktmpdir do |dir|
         %x{ cd #{bp_dir} && tar czf #{dir}/buildpack.tgz --exclude=.git . }
 
@@ -68,23 +68,23 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:rollback ORG/NAME [REVISION]
+  # buildkits:rollback ORG/NAME [REVISION]
   #
-  # roll back a buildpack to an earlier revision
+  # roll back a buildkit to an earlier revision
   #
   # If no revision is specified, use previous. Use
-  # buildpacks:revisions to see a full list.
+  # buildkits:revisions to see a full list.
   #
   #Example:
   #
-  # $ heroku buildpacks:rollback myorg/mypack v2
-  # Rolling back myorg/mypack buildpack... done, Rolled back to v2 as v5
+  # $ heroku buildkits:rollback myorg/mypack v2
+  # Rolling back myorg/mypack buildkit... done, Rolled back to v2 as v5
   #
   def rollback
     name = check_name(shift_argument)
     target = shift_argument || "previous"
     target = target.sub(/^v/, "")
-    action "Rolling back #{name} buildpack" do
+    action "Rolling back #{name} buildkit" do
       begin
         response = server["/buildpacks/#{name}/revisions/#{target}"].post({})
         revision = json_decode(response)["revision"]
@@ -93,20 +93,20 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
       rescue RestClient::BadRequest => e
         error json_decode(e.http_body)["message"]
       rescue RestClient::Forbidden
-        error "The '#{name}' buildpack is owned by someone else."
+        error "The '#{name}' buildkit is owned by someone else."
       rescue RestClient::ResourceNotFound
-        error "The '#{name}' buildpack does not exist."
+        error "The '#{name}' buildkit does not exist."
       end
     end
   end
 
-  # buildpacks:revisions ORG/NAME
+  # buildkits:revisions ORG/NAME
   #
-  # list buildpack revisions
+  # list buildkit revisions
   #
   #Example:
   #
-  # $ h buildpacks:revisions heroku/emacs
+  # $ h buildkits:revisions heroku/emacs
   # === Revisions
   # v4  2s ago   by me@myorg.org
   # v3  1m ago   by me@myorg.org
@@ -126,22 +126,22 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     rescue RestClient::BadRequest => e
       error json_decode(e.http_body)["message"]
     rescue RestClient::Forbidden
-      error "The '#{name}' buildpack is owned by someone else."
+      error "The '#{name}' buildkit is owned by someone else."
     rescue RestClient::ResourceNotFound
-      error "The '#{name}' buildpack does not exist."
+      error "The '#{name}' buildkit does not exist."
     end
   end
 
-  # buildpacks:share ORG EMAIL
+  # buildkits:share ORG EMAIL
   #
   # Add user with EMAIL as a member of ORG
   #
-  # Any member of an organization can publish to any buildpack owned
+  # Any member of an organization can publish to any buildkit owned
   # by that organization.
   #
   #Example:
   #
-  # $ heroku buildpacks:share myorg coworker@myorg.org
+  # $ heroku buildkits:share myorg coworker@myorg.org
   # Adding coworker@myorg.org to myorg... done
   #
   def share
@@ -160,13 +160,13 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:unshare ORG EMAIL
+  # buildkits:unshare ORG EMAIL
   #
   # Remove user with EMAIL from ORG
   #
   #Example:
   #
-  # $ heroku buildpacks:unshare myorg coworker@myorg.org
+  # $ heroku buildkits:unshare myorg coworker@myorg.org
   # Removing coworker@myorg.org from myorg... done
   #
   def unshare
@@ -185,14 +185,14 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:set BUILDPACK
+  # buildkits:set BUILDKIT
   #
-  # Use the specififed buildpack for the current app. You can pass in either
+  # Use the specififed buildkit for the current app. You can pass in either
   # the organization/name or a URL to a tarball or git repo.
   #
   #Example:
   #
-  # $ heroku buildpacks:set kr/inline -a myapp
+  # $ heroku buildkits:set kr/inline -a myapp
   # $ Using kr/inline for myapp... done
   #
   def set
@@ -218,7 +218,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   end
 
   def buildpack_url_for(name)
-    error("Must specify a buildpack") if name.nil?
+    error("Must specify a buildkit") if name.nil?
     if name =~ /:\/\//
       name # is a URL
     else
@@ -234,7 +234,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
 
   def check_name(name)
     if name.nil?
-      error("Must specify a buildpack name")
+      error("Must specify a buildkit name")
     elsif not name =~ /\//
       error("Must include organization name, eg myorg/mypack")
     else
