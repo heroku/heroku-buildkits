@@ -23,7 +23,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   #
   def list
     styled_header "Available Buildkits"
-    packs = json_decode(server["/buildkits"].get)
+    packs = json_decode(server["/buildpacks"].get)
     styled_array packs.map{|b| "#{b['org']}/#{b['name']}" }
   end
   alias_method :index, :list
