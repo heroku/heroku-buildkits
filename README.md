@@ -22,12 +22,13 @@ Publish and consume buildkits on Heroku.
     1   2012/06/28 17:23:06
 
     $ heroku buildkits:rollback mycorp/awesomepack 2
-    Rolling back mycorp/awesomepack buildpack... Rolled back to 2 as revision 4
+    Rolling back mycorp/awesomepack buildkit... Rolled back to 2 as revision 4
     done
 
-## Buildpack Users
+## Buildkit Users
 
-The `buildkits:set` command will configure an app to use a given buildpack.
+The `buildkits:set` command will configure an app to use a given
+buildkit.
 
 	$ heroku buildkits:set kr/inline -a myapp
 

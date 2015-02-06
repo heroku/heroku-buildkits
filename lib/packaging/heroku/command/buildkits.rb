@@ -40,7 +40,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   #Example:
   #
   # $ heroku buildkits:publish myorg/mypack
-  # Publishing myorg/mypack buildpack... done, v4
+  # Publishing myorg/mypack buildkit... done, v4
   #
   def publish
     name = check_name(shift_argument)
@@ -51,7 +51,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
       abort "Buildpack #{bp_dir} missing bin/detect or bin/compile."
     end
 
-    action "Publishing #{name} buildpack" do
+    action "Publishing #{name} buildkit" do
       Dir.mktmpdir do |dir|
         %x{ cd #{bp_dir} && tar czf #{dir}/buildpack.tgz --exclude=.git . }
 
@@ -70,7 +70,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
 
   # buildkits:rollback ORG/NAME [REVISION]
   #
-  # roll back a buildpack to an earlier revision
+  # roll back a buildkit to an earlier revision
   #
   # If no revision is specified, use previous. Use
   # buildkits:revisions to see a full list.
@@ -78,13 +78,13 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   #Example:
   #
   # $ heroku buildkits:rollback myorg/mypack v2
-  # Rolling back myorg/mypack buildpack... done, Rolled back to v2 as v5
+  # Rolling back myorg/mypack buildkit... done, Rolled back to v2 as v5
   #
   def rollback
     name = check_name(shift_argument)
     target = shift_argument || "previous"
     target = target.sub(/^v/, "")
-    action "Rolling back #{name} buildpack" do
+    action "Rolling back #{name} buildkit" do
       begin
         response = server["/buildpacks/#{name}/revisions/#{target}"].post({})
         revision = json_decode(response)["revision"]
@@ -93,16 +93,16 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
       rescue RestClient::BadRequest => e
         error json_decode(e.http_body)["message"]
       rescue RestClient::Forbidden
-        error "The '#{name}' buildpack is owned by someone else."
+        error "The '#{name}' buildkit is owned by someone else."
       rescue RestClient::ResourceNotFound
-        error "The '#{name}' buildpack does not exist."
+        error "The '#{name}' buildkit does not exist."
       end
     end
   end
 
   # buildkits:revisions ORG/NAME
   #
-  # list buildpack revisions
+  # list buildkit revisions
   #
   #Example:
   #
@@ -126,9 +126,9 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
     rescue RestClient::BadRequest => e
       error json_decode(e.http_body)["message"]
     rescue RestClient::Forbidden
-      error "The '#{name}' buildpack is owned by someone else."
+      error "The '#{name}' buildkit is owned by someone else."
     rescue RestClient::ResourceNotFound
-      error "The '#{name}' buildpack does not exist."
+      error "The '#{name}' buildkit does not exist."
     end
   end
 
@@ -136,7 +136,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   #
   # Add user with EMAIL as a member of ORG
   #
-  # Any member of an organization can publish to any buildpack owned
+  # Any member of an organization can publish to any buildkit owned
   # by that organization.
   #
   #Example:
@@ -185,9 +185,9 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
     end
   end
 
-  # buildkits:set BUILDPACK
+  # buildkits:set BUILDKIT
   #
-  # Use the specififed buildpack for the current app. You can pass in either
+  # Use the specififed buildkit for the current app. You can pass in either
   # the organization/name or a URL to a tarball or git repo.
   #
   #Example:
@@ -218,7 +218,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   end
 
   def buildpack_url_for(name)
-    error("Must specify a buildpack") if name.nil?
+    error("Must specify a buildkit") if name.nil?
     if name =~ /:\/\//
       name # is a URL
     else
@@ -234,7 +234,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
 
   def check_name(name)
     if name.nil?
-      error("Must specify a buildpack name")
+      error("Must specify a buildkit name")
     elsif not name =~ /\//
       error("Must include organization name, eg myorg/mypack")
     else

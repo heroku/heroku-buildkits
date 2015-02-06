@@ -3,15 +3,15 @@ require(File.expand_path(File.join(File.dirname(__FILE__), 'helper')))
 class TestRevisions < Heroku::Test
   test_heroku(publish("heroku", "piet")) do
     before { reset_db }
-    stdout "Publishing heroku/piet buildpack... done, v1\n"
+    stdout "Publishing heroku/piet buildkit... done, v1\n"
   end
 
   test_heroku(publish("heroku", "piet", buildpack_dir("elixir"))) do
-    stdout "Publishing heroku/piet buildpack... done, v2\n"
+    stdout "Publishing heroku/piet buildkit... done, v2\n"
   end
 
   test_heroku("build -b #{buildpack_url('piet')}") do
-    stdout(/Detecting buildpack... done, Elixir.*Success, slug is/m)
+    stdout(/Detecting buildkit... done, Elixir.*Success, slug is/m)
   end
 
   test_heroku("buildkits:revisions heroku/piet") do
@@ -19,7 +19,7 @@ class TestRevisions < Heroku::Test
   end
 
   test_heroku("buildkits:rollback heroku/piet") do
-    stdout "Rolling back heroku/piet buildpack... done, Rolled back to previous as v3\n"
+    stdout "Rolling back heroku/piet buildkit... done, Rolled back to previous as v3\n"
   end
 
   test_heroku("buildkits:revisions heroku/piet") do
@@ -31,7 +31,7 @@ class TestRevisions < Heroku::Test
 
   test_heroku("build -b #{buildpack_url('piet')} -r -a #{app}") do
     before { heroku "apps:create #{app}" }
-    stdout(/Detecting buildpack... done, Piet.*Success, slug is/m)
+    stdout(/Detecting buildkit... done, Piet.*Success, slug is/m)
     after do
       proc = open("http://#{app}.herokuapp.com/Procfile").read
       # for some reason assert_match isn't available here
