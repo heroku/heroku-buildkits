@@ -1,35 +1,35 @@
-# heroku-buildpacks
+# heroku-buildkits
 
-Publish and consume buildpacks on Heroku.
+Publish and consume buildkits on Heroku.
 
 ## Installation
 
-    $ heroku plugins:install https://github.com/heroku/heroku-buildpacks
+    $ heroku plugins:install https://github.com/heroku/heroku-buildkits
 
-## Buildpack Maintainers
+## Buildkit Maintainers
 
-### Publish a buildpack
+### Publish a buildkit
 
 	$ cd ~/awesomepack
-	$ heroku buildpacks:publish mycorp/awesomepack
+	$ heroku buildkits:publish mycorp/awesomepack
 
 ### Revisions
 
-    $ heroku buildpacks:revisions mycorp/awesomepack
+    $ heroku buildkits:revisions mycorp/awesomepack
     === Revisions
     3   2012/06/29 13:45:33
     2   2012/06/29 13:44:16
     1   2012/06/28 17:23:06
 
-    $ heroku buildpacks:rollback mycorp/awesomepack 2
+    $ heroku buildkits:rollback mycorp/awesomepack 2
     Rolling back mycorp/awesomepack buildpack... Rolled back to 2 as revision 4
     done
 
 ## Buildpack Users
 
-The `buildpacks:set` command will configure an app to use a given buildpack.
+The `buildkits:set` command will configure an app to use a given buildpack.
 
-	$ heroku buildpacks:set kr/inline -a myapp
+	$ heroku buildkits:set kr/inline -a myapp
 
 ## Developing
 

@@ -2,19 +2,19 @@ require "heroku/command"
 require "tmpdir"
 require "rest_client"
 
-# manage buildpacks
+# manage buildkits
 #
-class Heroku::Command::Buildpacks < Heroku::Command::Base
+class Heroku::Command::Buildkits < Heroku::Command::Base
 
-  # buildpacks:list
+  # buildkits:list
   #
-  # list all available buildpacks
+  # list all available buildkits
   #
   #Example:
   #
-  # $ heroku buildpacks:list
+  # $ heroku buildkits:list
   #
-  # === Available Buildpacks
+  # === Available Buildkits
   # heroku/clojure
   # heroku/emacs
   # heroku/erlang
@@ -22,15 +22,15 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   # [...]
   #
   def list
-    styled_header "Available Buildpacks"
-    packs = json_decode(server["/buildpacks"].get)
+    styled_header "Available Buildkits"
+    packs = json_decode(server["/buildkits"].get)
     styled_array packs.map{|b| "#{b['org']}/#{b['name']}" }
   end
   alias_method :index, :list
 
-  # buildpacks:publish ORG/NAME
+  # buildkits:publish ORG/NAME
   #
-  # publish a buildpack.
+  # publish a buildkits.
   #
   # -d, --buildpack-dir DIR # find buildpack in DIR instead of current directory
   #
@@ -39,7 +39,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   #Example:
   #
-  # $ heroku buildpacks:publish myorg/mypack
+  # $ heroku buildkits:publish myorg/mypack
   # Publishing myorg/mypack buildpack... done, v4
   #
   def publish
@@ -68,16 +68,16 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:rollback ORG/NAME [REVISION]
+  # buildkits:rollback ORG/NAME [REVISION]
   #
   # roll back a buildpack to an earlier revision
   #
   # If no revision is specified, use previous. Use
-  # buildpacks:revisions to see a full list.
+  # buildkits:revisions to see a full list.
   #
   #Example:
   #
-  # $ heroku buildpacks:rollback myorg/mypack v2
+  # $ heroku buildkits:rollback myorg/mypack v2
   # Rolling back myorg/mypack buildpack... done, Rolled back to v2 as v5
   #
   def rollback
@@ -100,13 +100,13 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:revisions ORG/NAME
+  # buildkits:revisions ORG/NAME
   #
   # list buildpack revisions
   #
   #Example:
   #
-  # $ h buildpacks:revisions heroku/emacs
+  # $ h buildkits:revisions heroku/emacs
   # === Revisions
   # v4  2s ago   by me@myorg.org
   # v3  1m ago   by me@myorg.org
@@ -132,7 +132,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:share ORG EMAIL
+  # buildkits:share ORG EMAIL
   #
   # Add user with EMAIL as a member of ORG
   #
@@ -141,7 +141,7 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
   #
   #Example:
   #
-  # $ heroku buildpacks:share myorg coworker@myorg.org
+  # $ heroku buildkits:share myorg coworker@myorg.org
   # Adding coworker@myorg.org to myorg... done
   #
   def share
@@ -160,13 +160,13 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:unshare ORG EMAIL
+  # buildkits:unshare ORG EMAIL
   #
   # Remove user with EMAIL from ORG
   #
   #Example:
   #
-  # $ heroku buildpacks:unshare myorg coworker@myorg.org
+  # $ heroku buildkits:unshare myorg coworker@myorg.org
   # Removing coworker@myorg.org from myorg... done
   #
   def unshare
@@ -185,14 +185,14 @@ class Heroku::Command::Buildpacks < Heroku::Command::Base
     end
   end
 
-  # buildpacks:set BUILDPACK
+  # buildkits:set BUILDPACK
   #
   # Use the specififed buildpack for the current app. You can pass in either
   # the organization/name or a URL to a tarball or git repo.
   #
   #Example:
   #
-  # $ heroku buildpacks:set kr/inline -a myapp
+  # $ heroku buildkits:set kr/inline -a myapp
   # $ Using kr/inline for myapp... done
   #
   def set

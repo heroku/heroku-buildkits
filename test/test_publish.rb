@@ -30,7 +30,7 @@ class TestPublish < Heroku::Test
     status 1
   end
 
-  test_heroku("buildpacks:share github #{HEROKU_USER}", :user => :other) do
+  test_heroku("buildkits:share github #{HEROKU_USER}", :user => :other) do
     stdout "Adding #{HEROKU_USER} to github... done\n"
   end
 
@@ -42,7 +42,7 @@ class TestPublish < Heroku::Test
     stdout(/Detecting buildpack... done, Ur\/Web.*Success, slug is/m)
   end
 
-  test_heroku("buildpacks:unshare github #{HEROKU_USER}", :user => :other) do
+  test_heroku("buildkits:unshare github #{HEROKU_USER}", :user => :other) do
     stdout "Removing #{HEROKU_USER} from github... done\n"
   end
 
@@ -52,7 +52,7 @@ class TestPublish < Heroku::Test
     status 1
   end
 
-  test_heroku("buildpacks:list") do
+  test_heroku("buildkits:list") do
     stdout "=== Available Buildpacks\ngithub/urweb\nheroku/elixir\n\n"
   end
 end

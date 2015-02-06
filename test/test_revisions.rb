@@ -14,15 +14,15 @@ class TestRevisions < Heroku::Test
     stdout(/Detecting buildpack... done, Elixir.*Success, slug is/m)
   end
 
-  test_heroku("buildpacks:revisions heroku/piet") do
+  test_heroku("buildkits:revisions heroku/piet") do
     stdout(/=== Revisions\nv2 +\d+[sm] ago +by #{Regexp.escape(HEROKU_USER)}\nv1 +\d+[sm] ago +by /m)
   end
 
-  test_heroku("buildpacks:rollback heroku/piet") do
+  test_heroku("buildkits:rollback heroku/piet") do
     stdout "Rolling back heroku/piet buildpack... done, Rolled back to previous as v3\n"
   end
 
-  test_heroku("buildpacks:revisions heroku/piet") do
+  test_heroku("buildkits:revisions heroku/piet") do
     stdout(/=== Revisions\nv3 +\d+[sm] ago +by #{Regexp.escape(HEROKU_USER)}\nv2 +\d+[sm] ago +by /m)
   end
 
