@@ -6,5 +6,5 @@ group :test do
   gem 'rake', "=0.9.2.2"
   gem 'turn', "=0.9.6"
   gem "rest-client", "=1.6.7"
-  gem "pg", "=0.13.2"
+  gem "pg", "=0.18.1"
 end
