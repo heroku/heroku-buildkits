@@ -1,27 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.2)
     ansi (1.4.3)
-    excon (0.16.1)
-    heroku (2.30.5)
-      heroku-api (~> 0.3.4)
-      launchy (>= 0.3.2)
-      netrc (~> 0.7.7)
-      rest-client (~> 1.6.1)
-      rubyzip
-    heroku-api (0.3.4)
-      excon (~> 0.16.1)
-    launchy (2.1.2)
-      addressable (~> 2.3)
     mime-types (1.19)
     minitest (3.2.0)
-    netrc (0.7.7)
     pg (0.18.1)
     rake (0.9.2.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rubyzip (0.9.9)
     turn (0.9.6)
       ansi
 
@@ -29,9 +15,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  heroku (= 2.30.5)
   minitest (= 3.2.0)
   pg (= 0.18.1)
   rake (= 0.9.2.2)
   rest-client (= 1.6.7)
   turn (= 0.9.6)
+
+BUNDLED WITH
+   1.11.2

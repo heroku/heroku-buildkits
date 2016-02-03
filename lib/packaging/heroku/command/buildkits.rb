@@ -196,9 +196,27 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   # $ Using kr/inline for myapp... done
   #
   def set
-    action "Modifying BUILDPACK_URL for #{app}" do
+    action "Modifying buildpacks for #{app}" do
       buildpack_url = buildpack_url_for(shift_argument)
-      api.put_config_vars(app, "BUILDPACK_URL" => buildpack_url)
+      system "heroku buildpacks:clear"
+      system "heroku buildpacks:set #{buildpack_url} -a #{app}"
+    end
+  end
+
+  # buildkits:set BUILDKIT
+  #
+  # Add the specififed buildkit to the current app. You can pass in either
+  # the organization/name or a URL to a tarball or git repo.
+  #
+  #Example:
+  #
+  # $ heroku buildkits:add kr/inline -a myapp
+  # $ Using kr/inline for myapp... done
+  #
+  def add
+    action "Modifying buildpacks for #{app}" do
+      buildpack_url = buildpack_url_for(shift_argument)
+      system "heroku buildpacks:add #{buildpack_url} -a #{app}"
     end
   end
 
@@ -242,4 +260,3 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
     end
   end
 end
-
