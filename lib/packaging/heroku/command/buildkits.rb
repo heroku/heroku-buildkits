@@ -198,7 +198,7 @@ class Heroku::Command::Buildkits < Heroku::Command::Base
   def set
     action "Modifying buildpacks for #{app}" do
       buildpack_url = buildpack_url_for(shift_argument)
-      system "heroku buildpacks:clear"
+      system "heroku buildpacks:clear -a #{app}"
       system "heroku buildpacks:set #{buildpack_url} -a #{app}"
     end
   end
