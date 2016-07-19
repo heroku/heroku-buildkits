@@ -8,8 +8,11 @@
   },
   "dependencies": {
     "co": "4.6.0",
-    "heroku-cli-util": "6.0.11",
-    "lodash.sortby": "4.5.0"
+    "execa": "0.4.0",
+    "heroku-cli-util": "6.0.14",
+    "lodash.sortby": "4.5.0",
+    "mz": "2.4.0",
+    "tmp": "0.0.28"
   },
   "devDependencies": {
     "mocha": "2.5.3",
