@@ -7,16 +7,34 @@ const path = require('path')
 const tmp = require('tmp')
 const execa = require('execa')
 const http = require('../lib/http')
+const FormData = require('form-data')
+const url = require('url')
 
 function checkname (name) {
   if (name.indexOf('/') === -1) throw new Error('Must include organization name, eg: myorg/mypack')
 }
 
 function validateBuildpack (d) {
-  if (!fs.exists(path.join(d, 'bin', 'detect')) ||
-      !fs.exists(path.join(d, 'bin', 'compile'))) {
+  if (!fs.existsSync(path.join(d, 'bin', 'detect')) ||
+      !fs.existsSync(path.join(d, 'bin', 'compile'))) {
     throw new Error(`Buildpack ${d} missing bin/detect or bin/compile`)
   }
+}
+
+function submitForm (form, params) {
+  let host = url.parse(params.host)
+  let http = require(host.protocol === 'https:' ? 'https' : 'http')
+  let data = ''
+  return new Promise((resolve, reject) => {
+    const headers = form.getHeaders()
+    let req = http.request(Object.assign(host, {headers}, params), res => {
+      res.setEncoding('utf8')
+      if (res.statusCode !== 200) reject(new Error(res.statusCode))
+      res.on('data', d => { data += d })
+      res.on('end', () => resolve(JSON.parse(data)))
+    })
+    form.pipe(req)
+  })
 }
 
 function * run (context, heroku) {
@@ -30,12 +48,15 @@ function * run (context, heroku) {
     const tmpdir = tmp.dirSync().name
     const tgz = path.join(tmpdir, 'buildpack.tgz')
     yield execa.shell(`cd ${d} && tar czf ${tgz} --exclude=.git .`)
-    const buildpack = yield fs.readFile(tgz)
-    const response = yield heroku.post(`/buildpacks/${name}`, {
-      host: http.host,
-      body: {buildpack}
+    let form = new FormData()
+    form.append('buildpack', fs.createReadStream(tgz))
+    const response = yield submitForm(form, {
+      path: `/buildpacks/${name}`,
+      method: 'POST',
+      auth: yield http.auth(context, heroku),
+      host: http.host
     })
-    cli.action.done(response.revision)
+    cli.action.done(`v${response.revision}`)
   }))
 }
 
@@ -44,6 +65,7 @@ module.exports = {
   command: '_publish',
   description: 'publish a buildkit',
   help: "If the organization doesn't exist, it will be created and you will be added to it.",
+  needsAuth: true,
   args: [
     {name: 'org/name'}
   ],
