@@ -24,7 +24,7 @@ describe('buildkits:unshare', () => {
     nock.cleanAll()
   })
 
-  it('adds foo@foo.com to foo', () => {
+  it('removes foo@foo.com from foo', () => {
     return cmd.run({auth: {password: 'foo'}, args: {org: 'foo', email: 'foo@foo.com'}})
     .then(() => {
       expect(cli.stderr, 'to equal', 'Removing foo@foo.com from foo... done\n')
