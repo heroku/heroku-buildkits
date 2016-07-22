@@ -9,6 +9,7 @@
   "dependencies": {
     "co": "4.6.0",
     "execa": "0.4.0",
+    "form-data": "1.0.0-rc4",
     "heroku-cli-util": "6.0.14",
     "lodash.sortby": "4.5.0",
     "mz": "2.4.0",
