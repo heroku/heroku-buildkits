@@ -1,0 +1,43 @@
+{
+  "name": "heroku-buildkits",
+  "description": "Heroku CLI plugin to manage Heroku buildkits.",
+  "version": "1.0.0",
+  "author": "Jeff Dickey (@dickeyxxx)",
+  "bugs": {
+    "url": "https://github.com/heroku/heroku-buildkits/issues"
+  },
+  "dependencies": {
+    "co": "4.6.0",
+    "execa": "0.4.0",
+    "form-data": "1.0.0-rc4",
+    "heroku-cli-util": "6.0.14",
+    "lodash.sortby": "4.5.0",
+    "moment": "2.14.1",
+    "mz": "2.4.0",
+    "tmp": "0.0.28"
+  },
+  "devDependencies": {
+    "mocha": "2.5.3",
+    "mocha-junit-reporter": "1.11.1",
+    "nock": "8.0.0",
+    "nyc": "7.0.0",
+    "proxyquire": "1.7.10",
+    "standard": "7.1.2",
+    "unexpected": "10.15.0"
+  },
+  "homepage": "https://github.com/heroku/heroku-buildkits",
+  "keywords": [
+    "heroku-plugin"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/heroku-buildkits.git"
+  },
+  "scripts": {
+    "postversion": "npm publish && git push && git push --tags",
+    "preversion": "npm test",
+    "test": "TZ=utc nyc mocha && standard"
+  }
+}

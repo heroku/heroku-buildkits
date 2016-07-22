@@ -1,3 +1,0 @@
-[submodule "heroku-anvil"]
-	path = heroku-anvil
-	url = git://github.com/ddollar/heroku-anvil.git

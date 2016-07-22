@@ -1,10 +1,12 @@
-# heroku-buildkits
+# heroku-buildkits [![CircleCI](https://circleci.com/gh/heroku/heroku-buildkits.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildkits)
+
+[![codecov](https://codecov.io/gh/heroku/heroku-buildkits/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-buildkits)
 
 Publish and consume buildkits on Heroku.
 
 ## Installation
 
-    $ heroku plugins:install https://github.com/heroku/heroku-buildkits
+    $ heroku plugins:install heroku-buildkits
 
 ## Buildkit Maintainers
 
@@ -31,18 +33,3 @@ The `buildkits:set` command will configure an app to use a given
 buildkit.
 
 	$ heroku buildkits:set kr/inline -a myapp
-
-## Developing
-
-To run the tests, you'll need
-[buildkits](https://github.com/heroku/buildkits) running locally.
-Currently you'll need to launch the server by hand. First some setup:
-
-    $ createdb buildkits-test
-    $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.db.migrate
-
-Then to run:
-
-    $ DATABASE_URL=postgres://localhost:5432/buildkits-test lein run -m buildkits.web &
-    $ export HEROKU_USER=[...] HEROKU_API_KEY=[...] HEROKU_OTHER_USER=[...] HEROKU_OTHER_API_KEY=[...]
-    $ bundle exec rake
