@@ -29,7 +29,7 @@ function submitForm (form, params) {
     const headers = form.getHeaders()
     let req = http.request(Object.assign(host, {headers}, params), res => {
       res.setEncoding('utf8')
-      if (res.statusCode !== 200) reject(new Error(res.statusCode))
+      if (res.statusCode > 299) reject(new Error(res.statusCode))
       res.on('data', d => { data += d })
       res.on('end', () => resolve(JSON.parse(data)))
     })
