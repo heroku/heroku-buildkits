@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "mocha": "2.5.3",
+    "mocha-junit-reporter": "1.11.1",
     "nock": "8.0.0",
     "nyc": "7.0.0",
     "standard": "7.1.0",
