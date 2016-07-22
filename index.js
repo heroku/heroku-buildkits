@@ -7,5 +7,6 @@ exports.topic = {
 
 exports.commands = [
   require('./commands'),
-  require('./commands/publish')
+  require('./commands/publish'),
+  require('./commands/share')
 ]
