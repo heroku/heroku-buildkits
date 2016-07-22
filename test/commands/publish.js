@@ -35,7 +35,7 @@ describe('buildkits:share', () => {
   })
 
   it('errors with invalid directory', () => {
-    return expect(cmd.run({auth: {password: 'foo'}, args: {'org/name': 'dickeyxxx/elixir'}, flags: {}})
-                  , 'to be rejected with', 'Buildpack /Users/jdickey/src/github.com/heroku/heroku-buildkits missing bin/detect or bin/compile')
+    return expect(cmd.run({auth: {password: 'foo'}, args: {'org/name': 'dickeyxxx/elixir'}, flags: {'buildpack-dir': '.'}})
+                  , 'to be rejected with', 'Buildpack . missing bin/detect or bin/compile')
   })
 })
