@@ -9,6 +9,7 @@ exports.commands = [
   require('./commands'),
   require('./commands/add'),
   require('./commands/publish'),
+  require('./commands/revisions'),
   require('./commands/set'),
   require('./commands/share'),
   require('./commands/unshare')
