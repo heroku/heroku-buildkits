@@ -29,7 +29,7 @@ Publish and consume buildkits on Heroku.
 
 ## Buildkit Users
 
-The `buildpacks:set` command will configure an app to use a given
+The `buildkits:set` command will configure an app to use a given
 buildkit.
 
-	$ heroku buildpacks:set kr/inline -a myapp
+	$ heroku buildkits:set kr/inline -a myapp
