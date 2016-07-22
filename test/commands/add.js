@@ -26,9 +26,7 @@ describe('buildkits:add', () => {
   it('adds the buildpack dickeyxxx/elixir', () => {
     return cmd.run({app: 'myapp', auth: {password: 'foo'}, args: {'org/name': 'dickeyxxx/elixir'}})
     .then(() => {
-      expect(exec.cmd, 'to equal', [
-        'heroku buildpacks:add https://codon-buildpacks.s3.amazonaws.com/buildpacks/dickeyxxx/elixir.tgz -a myapp'
-      ])
+      expect(exec.cmd, 'to equal', 'heroku buildpacks:add https://codon-buildpacks.s3.amazonaws.com/buildpacks/dickeyxxx/elixir.tgz -a myapp')
     })
   })
 })

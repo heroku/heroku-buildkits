@@ -26,9 +26,7 @@ describe('buildkits:set', () => {
   it('sets the buildpack to dickeyxxx/elixir', () => {
     return cmd.run({app: 'myapp', auth: {password: 'foo'}, args: {'org/name': 'dickeyxxx/elixir'}})
     .then(() => {
-      expect(exec.cmd, 'to equal', [
-        'heroku buildpacks:set https://codon-buildpacks.s3.amazonaws.com/buildpacks/dickeyxxx/elixir.tgz -a myapp'
-      ])
+      expect(exec.cmd, 'to equal', 'heroku buildpacks:set https://codon-buildpacks.s3.amazonaws.com/buildpacks/dickeyxxx/elixir.tgz -a myapp')
     })
   })
 })
