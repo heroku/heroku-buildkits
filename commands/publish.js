@@ -62,7 +62,7 @@ function * run (context, heroku) {
 
 module.exports = {
   topic: 'buildkits',
-  command: '_publish',
+  command: 'publish',
   description: 'publish a buildkit',
   help: "If the organization doesn't exist, it will be created and you will be added to it.",
   needsAuth: true,
