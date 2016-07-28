@@ -10,7 +10,7 @@ function * run (context, heroku) {
 
   cli.styledHeader('Revisions')
   let revisions = yield heroku.get(`/buildpacks/${name}/revisions`, {host: http.host})
-  cli.table(revisions, {
+  cli.table(revisions.reverse(), {
     printHeader: false,
     columns: [
       {key: 'id', format: i => `v${i}`},

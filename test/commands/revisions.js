@@ -29,8 +29,8 @@ describe('buildkits', () => {
     return cmd.run({args: {'org/name': 'dickeyxxx/elixir'}})
     .then(() => {
       expect(cli.stdout, 'to equal', `=== Revisions
-v1  a few seconds ago  by dickeyxxx
 v2  a few seconds ago  by dickeyxxx
+v1  a few seconds ago  by dickeyxxx
 `)
     })
   })
