@@ -47,9 +47,10 @@ function * run (context, heroku) {
   yield cli.action(`Publishing ${name} buildkit`, {success: false}, co(function * () {
     const tmpdir = tmp.dirSync().name
     const tgz = path.join(tmpdir, 'buildpack.tgz')
-    var excludes = "--exclude=.git"
-    if (fs.existsSync(".bkignore")) {
-      excludes += " -X .bkignore"
+    var excludes = '--exclude=.git'
+    var ignore = path.join(d, '.bkignore')
+    if (fs.existsSync(ignore)) {
+      excludes += ` -X ${ignore}`
     }
     yield execa.shell(`cd ${d} && tar czf ${tgz} ${excludes} .`)
     let form = new FormData()

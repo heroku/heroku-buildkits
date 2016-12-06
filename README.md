@@ -18,7 +18,7 @@ Publish and consume buildkits on Heroku.
 #### Excluding files from being published
 
 By default any `.git` sub directory is excluded and not published. If a
-`.bkignore` file exists in the current directory, the file patterns listed in
+`.bkignore` file exists in the buildpack directory, the file patterns listed in
 the file are not published. The format of the exclusions is the same used by
 [tar](https://www.gnu.org/software/tar/manual/html_node/exclude.html)
 
