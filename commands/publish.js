@@ -46,6 +46,11 @@ function * run (context, heroku) {
 
   let headers = {}
 
+  if (name.startsWith('heroku/')) {
+    let secondFactor = yield cli.prompt('Two-factor code', {mask: true});
+    headers['Heroku-Two-Factor-Code'] = secondFactor
+  }
+
   yield cli.action(`Publishing ${name} buildkit`, {success: false}, co(function * () {
     const tmpdir = tmp.dirSync().name
     const tgz = path.join(tmpdir, 'buildpack.tgz')
