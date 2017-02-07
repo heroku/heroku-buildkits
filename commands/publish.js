@@ -21,12 +21,12 @@ function validateBuildpack (d) {
   }
 }
 
-function submitForm (form, params) {
+function submitForm (form, headers, params) {
   let host = url.parse(params.host)
   let http = require(host.protocol === 'https:' ? 'https' : 'http')
   let data = ''
   return new Promise((resolve, reject) => {
-    const headers = form.getHeaders()
+    headers = Object.assign(headers, form.getHeaders())
     let req = http.request(Object.assign(host, {headers}, params), res => {
       res.setEncoding('utf8')
       if (res.statusCode > 299) reject(new Error(res.statusCode))
@@ -44,13 +44,15 @@ function * run (context, heroku) {
   const d = context.flags['buildpack-dir'] || process.cwd()
   validateBuildpack(d)
 
+  let headers = {}
+
   yield cli.action(`Publishing ${name} buildkit`, {success: false}, co(function * () {
     const tmpdir = tmp.dirSync().name
     const tgz = path.join(tmpdir, 'buildpack.tgz')
     yield execa.shell(`cd ${d} && tar czf ${tgz} --exclude=.git .`)
     let form = new FormData()
     form.append('buildpack', fs.createReadStream(tgz))
-    const response = yield submitForm(form, {
+    const response = yield submitForm(form, headers, {
       path: `/buildpacks/${name}`,
       method: 'POST',
       auth: yield http.auth(context, heroku),
