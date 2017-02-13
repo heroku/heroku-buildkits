@@ -14,7 +14,7 @@ describe('buildkits:set', () => {
   beforeEach(() => {
     cli.mockConsole()
 
-    api = nock('https://buildkits.herokuapp.com')
+    api = nock('https://buildkits.heroku.com')
       .get('/buildpacks/dickeyxxx/elixir').reply(200, {tar_link: 'https://codon-buildpacks.s3.amazonaws.com/buildpacks/dickeyxxx/elixir.tgz'})
   })
 

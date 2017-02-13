@@ -12,7 +12,7 @@ describe('buildkits', () => {
 
   beforeEach(() => {
     cli.mockConsole()
-    api = nock('https://buildkits.herokuapp.com')
+    api = nock('https://buildkits.heroku.com')
     api.get('/buildpacks/dickeyxxx/elixir/revisions')
     .reply(200, [
       {id: 1, created_at: new Date(), published_by: 'dickeyxxx'},

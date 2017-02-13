@@ -14,7 +14,7 @@ describe('buildkits:unshare', () => {
     cli.mockConsole()
 
     heroku = nock('https://api.heroku.com').get('/account').reply(200, {email: 'foo@foo.com'})
-    api = nock('https://buildkits.herokuapp.com')
+    api = nock('https://buildkits.heroku.com')
     api.delete('/buildpacks/foo/share/foo@foo.com').reply(200)
   })
 
