@@ -12,7 +12,7 @@ describe('buildkits', () => {
 
   beforeEach(() => {
     cli.mockConsole()
-    api = nock('https://buildkits.herokuapp.com')
+    api = nock('https://buildkits.heroku.com')
     api.get('/buildpacks')
     .reply(200, [
       {org: 'b', name: 'a'},

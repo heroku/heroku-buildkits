@@ -15,7 +15,7 @@ describe('buildkits:share', () => {
       cli.mockConsole()
 
       heroku = nock('https://api.heroku.com').get('/account').reply(200, {email: 'foo@foo.com'})
-      api = nock('https://buildkits.herokuapp.com')
+      api = nock('https://buildkits.heroku.com')
       api.post('/buildpacks/dickeyxxx/elixir').reply(200, {revision: '8'})
     })
 
