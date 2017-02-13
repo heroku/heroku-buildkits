@@ -20,6 +20,7 @@
     "mocha": "2.5.3",
     "mocha-junit-reporter": "1.11.1",
     "nock": "8.0.0",
+    "np": "2.12.0",
     "nyc": "7.0.0",
     "proxyquire": "1.7.10",
     "standard": "7.1.2",
@@ -36,8 +37,7 @@
     "url": "https://github.com/heroku/heroku-buildkits.git"
   },
   "scripts": {
-    "postversion": "npm publish && git push && git push --tags",
-    "preversion": "npm test",
+    "release": "np",
     "test": "TZ=utc nyc mocha && standard"
   }
 }
