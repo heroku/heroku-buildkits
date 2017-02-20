@@ -1,7 +1,7 @@
 {
   "name": "heroku-buildkits",
   "description": "Heroku CLI plugin to manage Heroku buildkits.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Jeff Dickey (@dickeyxxx)",
   "bugs": {
     "url": "https://github.com/heroku/heroku-buildkits/issues"
