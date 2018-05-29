@@ -26,6 +26,11 @@
     "standard": "7.1.2",
     "unexpected": "10.15.0"
   },
+  "files": [
+    "/index.js",
+    "/commands",
+    "/lib"
+  ],
   "homepage": "https://github.com/heroku/heroku-buildkits",
   "keywords": [
     "heroku-plugin"
