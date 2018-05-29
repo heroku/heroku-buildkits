@@ -47,7 +47,7 @@ function * run (context, heroku) {
   let headers = {}
 
   if (name.startsWith('heroku/')) {
-    let secondFactor = yield cli.prompt('Two-factor code', {mask: true});
+    let secondFactor = yield cli.prompt('Two-factor code', {mask: true})
     headers['Heroku-Two-Factor-Code'] = secondFactor
   }
 
