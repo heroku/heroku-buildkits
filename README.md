@@ -1,7 +1,5 @@
 # heroku-buildkits [![CircleCI](https://circleci.com/gh/heroku/heroku-buildkits.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildkits)
 
-[![codecov](https://codecov.io/gh/heroku/heroku-buildkits/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-buildkits)
-
 Publish and consume buildkits on Heroku.
 
 ## Installation
