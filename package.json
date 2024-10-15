@@ -12,7 +12,7 @@
     "form-data": "1.0.0-rc4",
     "heroku-cli-util": "6.0.14",
     "lodash.sortby": "4.5.0",
-    "moment": "2.14.1",
+    "moment": "2.29.4",
     "mz": "2.4.0",
     "tmp": "0.0.28"
   },
